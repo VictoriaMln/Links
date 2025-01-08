@@ -47,9 +47,9 @@ public class LinkManager {
         return UUID.randomUUID().toString().substring(0, 4);//генерируем короткую ссылку
     }
 
-    public void removeLinks() { //метод для удаления просроченных ссылок
+    public void removeLinks() { //метод для удаления просроченных ссылок или тех, у которых вышел лимит переходов
         for (User user : userMap.values()) {
-            user.getLinks().removeIf(link -> link.isTimeEnded());
+            user.getLinks().removeIf(link -> !link.isActive());
         }
     }
 
@@ -59,5 +59,19 @@ public class LinkManager {
             return false;
         }
         return user.getLinks().removeIf(link -> link.getShortUrl().equals(shortUrl));
+    }
+
+    public boolean changeShortLink(String userId, String shortUrl, long maxClicks) {
+        User user = userMap.get(userId);
+        if (user == null) {
+            return false;
+        }
+        for (ShortLink link : user.getLinks()) {
+            if (link.getShortUrl().equals(shortUrl)) {
+                link.setMaxClicks(maxClicks);
+            }
+        }
+        System.out.printf("Установлено максимальное количество переходов для ссылки %s : %d", shortUrl, maxClicks);
+        return true;
     }
 }

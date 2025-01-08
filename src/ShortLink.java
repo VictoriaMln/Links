@@ -29,6 +29,10 @@ public class ShortLink {
         return maxClicks;
     }
 
+    public void setMaxClicks(long maxClicks) {
+        this.maxClicks = maxClicks;
+    }
+
     public long getCurrentClicks() {
         return currentClicks;
     }

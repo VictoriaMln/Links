@@ -10,11 +10,12 @@ public class Main {
         LinkManager linkManager = new LinkManager();
 
         while (true) {
-            System.out.println("МЕНЮ (выберите пункт):");
+            System.out.println("\nМЕНЮ (выберите пункт):");
             System.out.println("1. Создать ссылку");
             System.out.println("2. Открыть ссылку");
             System.out.println("3. Показать все ссылки");
             System.out.println("4. Удалить короткую ссылку");
+            System.out.println("5. Изменить количество переходов по короткой ссылке");
             System.out.println("0. Выйти");
 
             String choice = scanner.nextLine().trim();
@@ -32,6 +33,9 @@ public class Main {
                 case "4":
                     deleteLink(scanner, linkManager);
                     break;
+                case "5":
+                    changeLink(scanner, linkManager);
+                    break;
                 case "0":
                     System.out.println("Выход");
                     scanner.close();
@@ -43,7 +47,7 @@ public class Main {
     }
 
     private static void createLink(Scanner scanner, LinkManager linkManager) { //создание ссылки
-        linkManager.removeLinks(); //удаляем просроченные ссылки
+        linkManager.removeLinks(); //удаляем неактивные ссылки
         String userId = checkUserId(scanner); //спрашиваем ID пользователя
         System.out.println("Введите исходную ссылку");
         String originaUrl = scanner.nextLine();
@@ -54,7 +58,7 @@ public class Main {
     }
 
     private static void openLink(Scanner scanner, LinkManager linkManager) { //переход по ссылке
-        linkManager.removeLinks(); //удаляем просроченные ссылки
+        linkManager.removeLinks(); //удаляем неактивные ссылки
         String userId = checkUserId(scanner); //спрашиваем ID пользователя
         System.out.println("Введите короткую ссылку: ");
         String shortUrl = scanner.nextLine();
@@ -82,7 +86,7 @@ public class Main {
     }
 
     private static void showAllLinks(Scanner scanner, LinkManager linkManager) { //показать список всех ссылок пользователя
-        linkManager.removeLinks(); //удаляем просроченные ссылки
+        linkManager.removeLinks(); //удаляем неактивные ссылки
         String userId = checkUserId(scanner); //спрашиваем ID пользователя
         var user = linkManager.getCreateUser(userId);
         var links = user.getLinks();
@@ -98,7 +102,7 @@ public class Main {
     }
 
     public static void deleteLink(Scanner scanner, LinkManager linkManager) {
-        linkManager.removeLinks(); //удаляем просроченные ссылки
+        linkManager.removeLinks(); //удаляем неактивные ссылки
         String userId = checkUserId(scanner); //спрашиваем ID пользователя
         System.out.println("Введите короткую ссылку, которую необходимо удалить: ");
         String shortUrl = scanner.nextLine();
@@ -107,6 +111,21 @@ public class Main {
         }
         else {
             System.out.println("Невозможно удалить ");
+        }
+    }
+
+    public static void changeLink(Scanner scanner, LinkManager linkManager) {
+        linkManager.removeLinks(); //удаляем неактивные ссылки
+        String userId = checkUserId(scanner); //спрашиваем ID пользователя
+        System.out.println("Введите короткую ссылку, которую необходимо редактировать: ");
+        String shortUrl = scanner.nextLine();
+        System.out.println("Введите количество доступных переходов (0 - без ограниченний)");
+        long maxClicks = Long.parseLong(scanner.nextLine());
+        if (linkManager.changeShortLink(userId, shortUrl, maxClicks)) {
+            System.out.println("\nСсылка изменена ");
+        }
+        else {
+            System.out.println("Невозможно изменить, ссылки не существует ");
         }
     }
 
